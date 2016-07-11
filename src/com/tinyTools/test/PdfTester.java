@@ -32,9 +32,9 @@ public class PdfTester {
 			document.open();
 			
 			// 汉字字体
-			BaseFont bfChinese = BaseFont.createFont("STSongStd-Light",  
-                    "UniGB-UCS2-H", false);  
-            Font boldFontChinese = new Font(bfChinese, 12, Font.BOLD,  
+			BaseFont bfChinese = BaseFont.createFont("STSongStd-Light",
+                    "UniGB-UCS2-H", false);
+            Font boldFontChinese = new Font(bfChinese, 12, Font.BOLD,
                     BaseColor.BLACK);
 
 			// 表单
