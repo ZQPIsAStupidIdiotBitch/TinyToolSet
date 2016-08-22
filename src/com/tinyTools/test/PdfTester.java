@@ -18,10 +18,13 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 /**
  * 默认的iText字体设置不支持中文字体，需要下载远东字体包iTextAsian.jar
+ * 
  * @author Administrator
  *
  */
 public class PdfTester {
+
+	private static final String[] HEAD_ARR = { "_A", "_B", "_C" };
 
 	public static void main(String[] args) throws IOException {
 		try {
@@ -30,30 +33,13 @@ public class PdfTester {
 			// PDF操作器
 			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("E:\\ITextTest.pdf"));
 			document.open();
-			
+
 			// 汉字字体
-			BaseFont bfChinese = BaseFont.createFont("STSongStd-Light",
-                    "UniGB-UCS2-H", false);
-            Font boldFontChinese = new Font(bfChinese, 12, Font.BOLD,
-                    BaseColor.BLACK);
+			BaseFont bfChinese = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", false);
+			Font boldFontChinese = new Font(bfChinese, 12, Font.BOLD, BaseColor.BLACK);
 
 			// 表单
-			PdfPTable t = new PdfPTable(3);
-			t.setSpacingBefore(25);
-			t.setSpacingAfter(25);
-			t.setWidthPercentage(100);
-
-			PdfPCell c1 = new PdfPCell(new Phrase("表头 1A", boldFontChinese));
-			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-			t.addCell(c1);
-
-			PdfPCell c2 = new PdfPCell(new Phrase("表头 2B", boldFontChinese));
-			c2.setHorizontalAlignment(Element.ALIGN_CENTER);
-			t.addCell(c2);
-
-			PdfPCell c3 = new PdfPCell(new Phrase("表头 3C", boldFontChinese));
-			c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-			t.addCell(c3);
+			PdfPTable t = createTbl(boldFontChinese);
 
 			t.addCell(new PdfPCell(new Phrase("1.1")));
 			t.addCell(new PdfPCell(new Phrase("1.2")));
@@ -62,27 +48,56 @@ public class PdfTester {
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cell.setVerticalAlignment(Element.ALIGN_CENTER);
 			t.addCell(cell);
-			
+
 			cell = new PdfPCell(new Phrase("1.4"));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cell.setVerticalAlignment(Element.ALIGN_CENTER);
 			t.addCell(cell);
 
+			for (int i = 0; i < 1000; i++) {
+				if (i % 27 == 0) {
+					document.add(t);
+					document.newPage();
+					t = createTbl(boldFontChinese);
+				}
+				for (int j = 0; j < 3; j++) {
+					cell = new PdfPCell(new Phrase("单元格" + i + "行" + j + "列", boldFontChinese));
+					t.addCell(cell);
+				}
+			}
+			
 			document.add(t);
+
 			// TODO
 
 			document.close();
 			writer.flush();
 			writer.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("PDF writed!");
 
+	}
+
+	private static PdfPTable createTbl(Font boldFontChinese) {
+		PdfPTable tbl = new PdfPTable(3);
+		tbl.setSpacingBefore(25);
+		tbl.setSpacingAfter(25);
+		tbl.setWidthPercentage(100);
+
+		for (int i = 0; i < 3; i++) {
+			PdfPCell cell = new PdfPCell(new Phrase("表头_" + (i + 1) + HEAD_ARR[i], boldFontChinese));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			tbl.addCell(cell);
+		}
+
+		return tbl;
 	}
 
 }
